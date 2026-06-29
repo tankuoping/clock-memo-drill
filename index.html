@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Clock Memo Drill</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0e0e1a;
+    color: #ccc;
+    font-family: 'Courier New', monospace;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 8px 6px;
+    overflow: hidden;
+  }
+
+  #topbar {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2px;
+    flex-shrink: 0;
+  }
+  #title { font-size: 0.55rem; letter-spacing: 2px; color: #888; text-transform: uppercase; }
+  #timer {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #00e5ff;
+    letter-spacing: 3px;
+    transition: color 0.3s;
+  }
+  #timer.warn { color: #ff1744; }
+
+  #drill-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    flex-shrink: 0;
+  }
+  .num-label {
+    font-size: 0.5rem;
+    color: #999;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    align-self: flex-start;
+    padding-left: 2px;
+  }
+  .clock-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+  }
+  .arrow { font-size: 1.2rem; color: #99a; line-height: 1; }
+  .plus-sign { font-size: 1.2rem; color: #99a; padding: 0 2px; line-height: 1; }
+  canvas.clock-face { border-radius: 50%; display: block; flex-shrink: 0; }
+  .divider { width: 88%; border: none; border-top: 1px solid #2e2e48; }
+
+  .flex-gap { flex: 1; }
+
+  #answer-display {
+    font-size: 1.6rem;
+    letter-spacing: 8px;
+    color: #00e5ff;
+    font-weight: bold;
+    min-height: 2rem;
+    text-align: center;
+    min-width: 100px;
+  }
+  #answer-display.placeholder { color: #445; }
+
+  #result {
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    min-height: 1rem;
+    text-align: center;
+    color: #aaa;
+  }
+  #result.correct { color: #00e676; }
+  #result.wrong { color: #ff1744; }
+  #result.timesup { color: #ff9800; }
+
+  #correct-reveal {
+    font-size: 0.75rem;
+    color: #bbb;
+    letter-spacing: 2px;
+    min-height: 0.9rem;
+    text-align: center;
+  }
+
+  #keypad {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+    flex-shrink: 0;
+  }
+  .key-row {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+  }
+  .key {
+    flex: 1;
+    max-width: 52px;
+    height: 40px;
+    background: #181828;
+    border: 1.5px solid #2a2a40;
+    color: #eee;
+    font-family: 'Courier New', monospace;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  .key:active { background: #00e5ff22; border-color: #00e5ff; }
+  .key.neg { color: #ffb74d; }
+  .key.neg:active { background: #ff980022; border-color: #ff9800; }
+  .key.action { color: #ccc; font-size: 0.8rem; letter-spacing: 1px; background: #141422; }
+  .key.action:active { background: #ffffff11; }
+  .key.submit-key {
+    color: #00e676;
+    border-color: #00e676;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    background: #00e67611;
+  }
+  .key.submit-key:active { background: #00e67633; }
+  .key.next-key {
+    color: #aaa;
+    border-color: #444;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    background: #141422;
+  }
+  .key.next-key:active { background: #ffffff11; border-color: #888; }
+
+  #start-btn {
+    background: #00e5ff18;
+    border: 1.5px solid #00e5ff;
+    color: #00e5ff;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    padding: 10px 40px;
+    border-radius: 6px;
+    cursor: pointer;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    -webkit-tap-highlight-color: transparent;
+    flex-shrink: 0;
+  }
+
+  #answer-section {
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <span id="title">Clock Memo</span>
+  <div id="timer">0.0</div>
+</div>
+
+<div id="drill-area" class="hidden">
+  <span class="num-label">① delta</span>
+  <div class="clock-row">
+    <canvas class="clock-face" id="c1"></canvas>
+    <span class="arrow">→</span>
+    <canvas class="clock-face" id="c2"></canvas>
+  </div>
+  <hr class="divider">
+  <span class="num-label">② sum</span>
+  <div class="clock-row">
+    <canvas class="clock-face" id="c3"></canvas>
+    <span class="arrow">→</span>
+    <canvas class="clock-face" id="c4"></canvas>
+    <span class="plus-sign">+</span>
+    <canvas class="clock-face" id="c5"></canvas>
+    <span class="arrow">→</span>
+    <canvas class="clock-face" id="c6"></canvas>
+  </div>
+  <hr class="divider">
+  <span class="num-label">③ delta</span>
+  <div class="clock-row">
+    <canvas class="clock-face" id="c7"></canvas>
+    <span class="arrow">→</span>
+    <canvas class="clock-face" id="c8"></canvas>
+  </div>
+</div>
+
+<div class="flex-gap"></div>
+
+<div id="answer-section" class="hidden">
+  <div id="answer-display" class="placeholder">_ _ _</div>
+  <div id="result"></div>
+  <div id="correct-reveal"></div>
+</div>
+
+<div id="keypad" class="hidden" style="margin-top:4px;">
+  <div class="key-row">
+    <div class="key neg" data-val="a">a</div>
+    <div class="key neg" data-val="b">b</div>
+    <div class="key neg" data-val="c">c</div>
+    <div class="key neg" data-val="d">d</div>
+    <div class="key neg" data-val="e">e</div>
+  </div>
+  <div class="key-row">
+    <div class="key" data-val="0">0</div>
+    <div class="key" data-val="1">1</div>
+    <div class="key" data-val="2">2</div>
+    <div class="key" data-val="3">3</div>
+    <div class="key" data-val="4">4</div>
+    <div class="key" data-val="5">5</div>
+    <div class="key" data-val="6">6</div>
+  </div>
+  <div class="key-row">
+    <div class="key action" data-action="clear">CLR</div>
+    <div class="key action" data-action="back">⌫</div>
+    <div class="key next-key" data-action="next">NEXT</div>
+    <div class="key submit-key" data-action="submit">OK</div>
+  </div>
+</div>
+
+<button id="start-btn">START</button>
+
+<script>
+  const SCREEN_W = Math.min(window.innerWidth, 390);
+  const SZ = Math.max(34, Math.min(Math.floor((SCREEN_W - 14*3 - 4*7) / 4), 48));
+  document.querySelectorAll('canvas.clock-face').forEach(c => { c.width=SZ; c.height=SZ; });
+
+  let timerInterval=null, startTime=null, elapsed=0;
+  let correctAnswer='', currentInput='', submitted=false, timedOut=false;
+  let speechPrimed=false, lastSpoke={};
+
+  const codeMap={0:'0',1:'1',2:'2',3:'3',4:'4',5:'5',6:'6','-1':'a','-2':'b','-3':'c','-4':'d','-5':'e'};
+
+  function randHour(){ return Math.floor(Math.random()*12)+1; }
+  function clockDelta(h1,h2){ let d=h2-h1; if(d>6)d-=12; if(d<-6)d+=12; if(d===-6)d=6; return d; }
+  function wrapSum(s){ if(s>6)s-=12; if(s<-6)s+=12; if(s===-6)s=6; return s; }
+  function toCode(v){ if(v===6||v===-6)return '6'; return codeMap[v]??String(v); }
+
+  function drawClock(id, hour){
+    const canvas=document.getElementById(id);
+    const ctx=canvas.getContext('2d');
+    const s=canvas.width, cx=s/2, cy=s/2, r=s/2-1.5;
+    ctx.clearRect(0,0,s,s);
+
+    // Face
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
+    ctx.fillStyle='#0a0a18'; ctx.fill();
+    ctx.strokeStyle='#252535'; ctx.lineWidth=1.5; ctx.stroke();
+
+    // Ticks only — no numbers
+    for(let i=1;i<=12;i++){
+      const a=(i/12)*Math.PI*2-Math.PI/2;
+      const isMajor=(i%3===0);
+      const tickOuter=r-1;
+      const tickInner=isMajor ? r-6 : r-3;
+      ctx.beginPath();
+      ctx.moveTo(cx+Math.cos(a)*tickInner, cy+Math.sin(a)*tickInner);
+      ctx.lineTo(cx+Math.cos(a)*tickOuter, cy+Math.sin(a)*tickOuter);
+      ctx.strokeStyle=isMajor?'#889':'#445';
+      ctx.lineWidth=isMajor?1.8:1;
+      ctx.stroke();
+    }
+
+    // Hand shaft
+    const a=(hour/12)*Math.PI*2-Math.PI/2;
+    const handLen=r-7;
+    const tipX=cx+Math.cos(a)*handLen, tipY=cy+Math.sin(a)*handLen;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(tipX,tipY);
+    ctx.strokeStyle='#00e5ff'; ctx.lineWidth=Math.max(2.5,s*0.07);
+    ctx.lineCap='butt'; ctx.stroke();
+
+    // Arrowhead
+    const hl=Math.max(5,s*0.13), ha=0.42;
+    ctx.beginPath();
+    ctx.moveTo(tipX,tipY);
+    ctx.lineTo(tipX-hl*Math.cos(a-ha), tipY-hl*Math.sin(a-ha));
+    ctx.lineTo(tipX-hl*Math.cos(a+ha), tipY-hl*Math.sin(a+ha));
+    ctx.closePath(); ctx.fillStyle='#00e5ff'; ctx.fill();
+
+    // Center dot
+    ctx.beginPath(); ctx.arc(cx,cy,Math.max(2,s*0.055),0,Math.PI*2);
+    ctx.fillStyle='#00e5ff'; ctx.fill();
+  }
+
+  function generateTrial(){
+    const h1=randHour(),h2=randHour(); const d1=clockDelta(h1,h2);
+    const h3=randHour(),h4=randHour(),h5=randHour(),h6=randHour();
+    const d2=wrapSum(clockDelta(h3,h4)+clockDelta(h5,h6));
+    const h7=randHour(),h8=randHour(); const d3=clockDelta(h7,h8);
+    [['c1',h1],['c2',h2],['c3',h3],['c4',h4],['c5',h5],['c6',h6],['c7',h7],['c8',h8]]
+      .forEach(([id,h])=>drawClock(id,h));
+    correctAnswer=toCode(d1)+toCode(d2)+toCode(d3);
+  }
+
+  function primeSpeech(){
+    if(speechPrimed) return; speechPrimed=true;
+    window.speechSynthesis.speak(new SpeechSynthesisUtterance(''));
+  }
+
+  function speak(text){
+    if(lastSpoke[text]) return; lastSpoke[text]=true;
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.rate=1.2; u.volume=1;
+    window.speechSynthesis.speak(u);
+  }
+
+  function startTimer(){
+    startTime=Date.now(); elapsed=0; lastSpoke={};
+    const el=document.getElementById('timer');
+    el.classList.remove('warn'); el.textContent='0.0';
+    clearInterval(timerInterval);
+    timerInterval=setInterval(()=>{
+      elapsed=(Date.now()-startTime)/1000;
+      el.textContent=elapsed.toFixed(1);
+      if(elapsed>=8&&elapsed<8.2) speak('8');
+      if(elapsed>=12&&elapsed<12.2) speak('12');
+      if(elapsed>=15&&!timedOut){
+        timedOut=true;
+        el.classList.add('warn'); el.textContent='15.0';
+        clearInterval(timerInterval);
+        const r=document.getElementById('result');
+        r.className='timesup'; r.textContent="TIME'S UP";
+      }
+    },100);
+  }
+
+  function updateDisplay(){
+    const el=document.getElementById('answer-display');
+    if(currentInput.length===0){
+      el.textContent='_ _ _'; el.className='placeholder';
+    } else {
+      el.textContent=currentInput.padEnd(3,'_').split('').join(' ');
+      el.className='';
+    }
+  }
+
+  function handleKey(val){
+    if(submitted) return;
+    if(currentInput.length<3){
+      currentInput+=val; updateDisplay();
+      if(currentInput.length===3) submitAnswer();
+    }
+  }
+
+  function handleAction(action){
+    if(action==='next'){ startDrill(); return; }
+    if(action==='clear'){
+      if(submitted){ startDrill(); return; }
+      currentInput=''; updateDisplay();
+    } else if(action==='back'){
+      if(submitted){ startDrill(); return; }
+      currentInput=currentInput.slice(0,-1); updateDisplay();
+    } else if(action==='submit'){
+      if(submitted){ startDrill(); return; }
+      submitAnswer();
+    }
+  }
+
+  function submitAnswer(){
+    if(submitted||currentInput.length===0) return;
+    submitted=true;
+    clearInterval(timerInterval);
+    const r=document.getElementById('result');
+    const rev=document.getElementById('correct-reveal');
+    const t=elapsed.toFixed(2);
+    const wasLate=timedOut;
+    if(currentInput===correctAnswer){
+      r.className='correct';
+      r.textContent='✓ '+t+'s'+(wasLate?' (late)':'');
+      rev.textContent='';
+    } else {
+      r.className='wrong';
+      r.textContent='✗ '+t+'s'+(wasLate?' (late)':'');
+      rev.textContent='ans: '+correctAnswer;
+    }
+  }
+
+  function startDrill(){
+    primeSpeech();
+    clearInterval(timerInterval);
+    submitted=false; timedOut=false; currentInput='';
+    document.getElementById('result').textContent='';
+    document.getElementById('result').className='';
+    document.getElementById('correct-reveal').textContent='';
+    updateDisplay();
+    document.getElementById('drill-area').classList.remove('hidden');
+    document.getElementById('answer-section').classList.remove('hidden');
+    document.getElementById('answer-section').style.display='flex';
+    document.getElementById('keypad').classList.remove('hidden');
+    document.getElementById('start-btn').classList.add('hidden');
+    generateTrial();
+    startTimer();
+  }
+
+  document.querySelectorAll('.key[data-val]').forEach(k=>{
+    k.addEventListener('click',()=>handleKey(k.dataset.val));
+  });
+  document.querySelectorAll('.key[data-action]').forEach(k=>{
+    k.addEventListener('click',()=>handleAction(k.dataset.action));
+  });
+  document.getElementById('start-btn').addEventListener('click', startDrill);
+</script>
+</body>
+</html>
