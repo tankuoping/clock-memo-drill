@@ -269,17 +269,18 @@
     ctx.fillStyle='#0a0a18'; ctx.fill();
     ctx.strokeStyle='#252535'; ctx.lineWidth=1.5; ctx.stroke();
 
-    // Ticks only — no numbers
+    // Ticks only — no numbers, thick and obvious
     for(let i=1;i<=12;i++){
       const a=(i/12)*Math.PI*2-Math.PI/2;
       const isMajor=(i%3===0);
       const tickOuter=r-1;
-      const tickInner=isMajor ? r-6 : r-3;
+      const tickInner=isMajor ? r-8 : r-5;
       ctx.beginPath();
       ctx.moveTo(cx+Math.cos(a)*tickInner, cy+Math.sin(a)*tickInner);
       ctx.lineTo(cx+Math.cos(a)*tickOuter, cy+Math.sin(a)*tickOuter);
-      ctx.strokeStyle=isMajor?'#889':'#445';
-      ctx.lineWidth=isMajor?1.8:1;
+      ctx.strokeStyle=isMajor?'#cdd':'#99a';
+      ctx.lineWidth=isMajor?Math.max(2.5,s*0.05):Math.max(1.8,s*0.035);
+      ctx.lineCap='round';
       ctx.stroke();
     }
 
