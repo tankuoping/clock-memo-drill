@@ -28,7 +28,7 @@
     flex-shrink: 0;
   }
   #title { font-size: 0.55rem; letter-spacing: 2px; color: #888; text-transform: uppercase; }
-  #topbar-right { display: flex; align-items: center; gap: 10px; }
+  #topbar-right { display: flex; align-items: center; gap: 8px; }
   #method-btn {
     background: none;
     border: 1px solid #445;
@@ -51,9 +51,24 @@
   }
   #timer.warn { color: #ff1744; }
 
+  #saveclock {
+    font-size: 1rem;
+    font-weight: bold;
+    letter-spacing: 3px;
+    color: #ff1744;
+    text-shadow: 0 0 12px #ff174488;
+    flex-shrink: 0;
+    padding: 2px 0;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+  }
+
   #puzzle {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     justify-content: center;
     width: 100%;
     flex-shrink: 0;
@@ -71,8 +86,7 @@
     font-style: italic;
     min-height: 0.7rem;
   }
-  .grid3 { display: grid; grid-template-columns: repeat(3, auto); gap: 3px; }
-  canvas.clock-face { border-radius: 50%; display: block; }
+  canvas.side-canvas { display: block; }
 
   .flex-gap { flex: 1; }
 
@@ -164,7 +178,6 @@
   #answer-section { flex-direction: column; align-items: center; gap: 2px; }
   .hidden { display: none !important; }
 
-  /* ---- Method sheet overlay ---- */
   #method-overlay {
     position: fixed;
     inset: 0;
@@ -194,10 +207,7 @@
     margin-bottom: 12px;
     text-transform: uppercase;
   }
-  .m-section {
-    border-top: 1px solid #2e2e48;
-    padding: 10px 0;
-  }
+  .m-section { border-top: 1px solid #2e2e48; padding: 10px 0; }
   .m-section:first-of-type { border-top: none; padding-top: 0; }
   .m-heading {
     font-size: 0.6rem;
@@ -206,31 +216,12 @@
     text-transform: uppercase;
     margin-bottom: 6px;
   }
-  .m-row {
-    display: flex;
-    font-size: 0.75rem;
-    line-height: 1.7;
-  }
-  .m-key {
-    color: #ffb74d;
-    width: 84px;
-    flex-shrink: 0;
-    font-weight: bold;
-  }
+  .m-row { display: flex; font-size: 0.75rem; line-height: 1.7; }
+  .m-key { color: #ffb74d; width: 84px; flex-shrink: 0; font-weight: bold; }
   .m-val { color: #ddd; }
   .m-val .paren { color: #7a9; }
-  .m-num {
-    color: #00e5ff;
-    width: 38px;
-    flex-shrink: 0;
-    font-weight: bold;
-  }
-  .m-pin {
-    color: #ffb74d;
-    width: 46px;
-    flex-shrink: 0;
-    font-weight: bold;
-  }
+  .m-num { color: #00e5ff; width: 38px; flex-shrink: 0; font-weight: bold; }
+  .m-pin { color: #ffb74d; width: 46px; flex-shrink: 0; font-weight: bold; }
   #method-close {
     display: block;
     margin: 14px auto 0;
@@ -257,16 +248,18 @@
   </div>
 </div>
 
+<div id="saveclock">#SAVECLOCK</div>
+
 <div id="puzzle" class="hidden">
   <div class="side">
     <span class="side-label">Side A</span>
     <span class="side-sublabel">&nbsp;</span>
-    <div class="grid3" id="gridA"></div>
+    <canvas class="side-canvas" id="sideA"></canvas>
   </div>
   <div class="side">
     <span class="side-label">Side B</span>
     <span class="side-sublabel">After vertical flip</span>
-    <div class="grid3" id="gridB"></div>
+    <canvas class="side-canvas" id="sideB"></canvas>
   </div>
 </div>
 
@@ -311,18 +304,15 @@
 
 <button id="start-btn">START</button>
 
-<!-- Method sheet -->
 <div id="method-overlay" class="hidden">
   <div id="method-card">
     <h2>Luis 3M 7SIM Flip Method</h2>
-
     <div class="m-section">
       <div class="m-heading">Memo</div>
       <div class="m-row"><span class="m-key">M1</span><span class="m-val">L to U</span></div>
       <div class="m-row"><span class="m-key">M2</span><span class="m-val">R to D + x2(L to UL)</span></div>
       <div class="m-row"><span class="m-key">M3</span><span class="m-val">U to C</span></div>
     </div>
-
     <div class="m-section">
       <div class="m-heading">Execution</div>
       <div class="m-row"><span class="m-num">(1)</span><span class="m-pin">L</span><span class="m-val">D to R <span class="paren">(M1)</span></span></div>
@@ -333,7 +323,6 @@
       <div class="m-row"><span class="m-num">(6)</span><span class="m-pin">UL</span><span class="m-val">C to D <span class="paren">(DR to D)</span></span></div>
       <div class="m-row"><span class="m-num">(7)</span><span class="m-pin">\</span><span class="m-val">AUF</span></div>
     </div>
-
     <div class="m-section">
       <div class="m-heading">Notation</div>
       <div class="m-row"><span class="m-key">M</span><span class="m-val">Memo</span></div>
@@ -343,25 +332,25 @@
       <div class="m-row"><span class="m-key">w/o ()</span><span class="m-val">SOLVE W UP PINS</span></div>
       <div class="m-row"><span class="m-key">w ()</span><span class="m-val">solve w down pins</span></div>
     </div>
-
     <button id="method-close">CLOSE</button>
   </div>
 </div>
 
 <script>
+  // ---- Sizing ----
   const SCREEN_W = Math.min(window.innerWidth, 420);
-  const SZ = Math.max(30, Math.min(Math.floor((SCREEN_W - 12 - 10 - 12) / 6), 52));
+  const SIDE_W = Math.floor((SCREEN_W - 8 - 12) / 2);   // each side canvas
+  const PAD = Math.max(5, SIDE_W * 0.04);                // body padding around clocks
+  const GAP = Math.max(3, SIDE_W * 0.025);               // gap between clocks
+  const SZ  = (SIDE_W - 2*PAD - 2*GAP) / 3;              // clock diameter
 
-  const gridA = document.getElementById('gridA');
-  const gridB = document.getElementById('gridB');
-  for(let i=0;i<9;i++){
-    const cA=document.createElement('canvas');
-    cA.className='clock-face'; cA.id='A'+i; cA.width=SZ; cA.height=SZ;
-    gridA.appendChild(cA);
-    const cB=document.createElement('canvas');
-    cB.className='clock-face'; cB.id='B'+i; cB.width=SZ; cB.height=SZ;
-    gridB.appendChild(cB);
-  }
+  const canvA = document.getElementById('sideA');
+  const canvB = document.getElementById('sideB');
+  [canvA, canvB].forEach(c => { c.width = SIDE_W; c.height = SIDE_W; });
+
+  // Clock center for (row, col)
+  function clockCX(col){ return PAD + SZ/2 + col*(SZ+GAP); }
+  function clockCY(row){ return PAD + SZ/2 + row*(SZ+GAP); }
 
   let timerInterval=null, startTime=null, elapsed=0;
   let correctAnswer='', currentInput='', submitted=false, timedOut=false;
@@ -375,58 +364,128 @@
   function wrapSum(s){ if(s>6)s-=12; if(s<-6)s+=12; if(s===-6)s=6; return s; }
   function toCode(v){ if(v===6||v===-6)return '6'; return codeMap[v]??String(v); }
 
-  function drawClock(id, hour){
-    const canvas=document.getElementById(id);
-    const ctx=canvas.getContext('2d');
-    const s=canvas.width, cx=s/2, cy=s/2, r=s/2-1.5;
-    ctx.clearRect(0,0,s,s);
+  // ---- Draw a full puzzle side with body outline, 9 clocks, 4 pins ----
+  function drawSide(canvas, hours, theme){
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width;
+    ctx.clearRect(0,0,W,W);
 
+    const bodyCol = theme==='dark' ? '#1a1a1e' : '#ece9e2';
+    const bodyRim = theme==='dark' ? '#3a3a42' : '#b8b4aa';
+    const faceCol = theme==='dark' ? '#f5f5f0' : '#141418';
+    const tickCol = theme==='dark' ? '#333'    : '#ddd';
+    const majorCol= theme==='dark' ? '#000'    : '#fff';
+    const handCol = theme==='dark' ? '#111'    : '#f5f5f0';
+    const pinCol  = theme==='dark' ? '#e8e4d8' : '#1a1a1e';
+    const pinRim  = theme==='dark' ? '#999'    : '#000';
+
+    // --- Puzzle body: circular outline with 4 corner lobes (real puzzle shape) ---
+    const bulgeR = SZ/2 + PAD*0.8;
+    ctx.fillStyle = bodyCol;
+    ctx.beginPath();
+    // Main circular body
+    ctx.arc(W/2, W/2, W/2 - 1.5, 0, Math.PI*2);
+    // 4 corner lobes where corner clocks bulge past the circle
+    for(const [r,c] of [[0,0],[0,2],[2,0],[2,2]]){
+      ctx.moveTo(clockCX(c)+bulgeR, clockCY(r));
+      ctx.arc(clockCX(c), clockCY(r), bulgeR, 0, Math.PI*2);
+    }
+    ctx.fill();
+
+    // Rim stroke
+    ctx.strokeStyle = bodyRim;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(W/2, W/2, W/2 - 1.5, 0, Math.PI*2);
+    ctx.stroke();
+
+    // --- 9 clock faces ---
+    for(let r=0;r<3;r++){
+      for(let c=0;c<3;c++){
+        drawFace(ctx, clockCX(c), clockCY(r), SZ/2 - 1, hours[r*3+c],
+                 faceCol, tickCol, majorCol, handCol);
+      }
+    }
+
+    // --- 4 pins at interior intersections ---
+    const pinR = Math.max(3.5, SZ*0.14);
+    for(let r=0;r<2;r++){
+      for(let c=0;c<2;c++){
+        const px = (clockCX(c)+clockCX(c+1))/2;
+        const py = (clockCY(r)+clockCY(r+1))/2;
+        // Pin shadow ring
+        ctx.beginPath(); ctx.arc(px, py, pinR+1.2, 0, Math.PI*2);
+        ctx.fillStyle = pinRim; ctx.fill();
+        // Pin head
+        ctx.beginPath(); ctx.arc(px, py, pinR, 0, Math.PI*2);
+        ctx.fillStyle = pinCol; ctx.fill();
+        // Highlight
+        ctx.beginPath(); ctx.arc(px - pinR*0.3, py - pinR*0.3, pinR*0.35, 0, Math.PI*2);
+        ctx.fillStyle = theme==='dark' ? '#fff' : '#444';
+        ctx.globalAlpha = 0.5;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+    }
+  }
+
+  function drawFace(ctx, cx, cy, r, hour, faceCol, tickCol, majorCol, handCol){
+    // Face
     ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
-    ctx.fillStyle='#0a0a18'; ctx.fill();
-    ctx.strokeStyle='#252535'; ctx.lineWidth=1.5; ctx.stroke();
+    ctx.fillStyle=faceCol; ctx.fill();
 
+    // Ticks
+    const s = r*2;
     for(let i=1;i<=12;i++){
       const a=(i/12)*Math.PI*2-Math.PI/2;
       const isMajor=(i%3===0);
-      const tickOuter=r-1;
-      const tickInner=isMajor ? r-7 : r-4;
+      const tickOuter=r-1.5;
+      const tickInner=isMajor ? r-6 : r-3.5;
       ctx.beginPath();
       ctx.moveTo(cx+Math.cos(a)*tickInner, cy+Math.sin(a)*tickInner);
       ctx.lineTo(cx+Math.cos(a)*tickOuter, cy+Math.sin(a)*tickOuter);
-      ctx.strokeStyle=isMajor?'#cdd':'#99a';
-      ctx.lineWidth=isMajor?Math.max(2.2,s*0.055):Math.max(1.5,s*0.035);
+      ctx.strokeStyle=isMajor?majorCol:tickCol;
+      ctx.lineWidth=isMajor?Math.max(2,s*0.05):Math.max(1.2,s*0.028);
       ctx.lineCap='round';
       ctx.stroke();
     }
 
-    const a=(hour/12)*Math.PI*2-Math.PI/2;
-    const handLen=r-6;
-    const tipX=cx+Math.cos(a)*handLen, tipY=cy+Math.sin(a)*handLen;
-    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(tipX,tipY);
-    ctx.strokeStyle='#00e5ff'; ctx.lineWidth=Math.max(2.2,s*0.08);
-    ctx.lineCap='butt'; ctx.stroke();
+    // Red 12 marker
+    ctx.beginPath();
+    ctx.arc(cx, cy-r+Math.max(3,s*0.09), Math.max(1.4,s*0.033), 0, Math.PI*2);
+    ctx.fillStyle='#e53935';
+    ctx.fill();
 
-    const hl=Math.max(4,s*0.14), ha=0.42;
+    // Classic hand: kite pointer + tail + hub
+    const a=(hour/12)*Math.PI*2-Math.PI/2;
+    const handLen=r-4;
+    const tailLen=r*0.28;
+    const baseW=Math.max(2.2,s*0.08);
+    const tipX=cx+Math.cos(a)*handLen, tipY=cy+Math.sin(a)*handLen;
+    const perp=a+Math.PI/2;
     ctx.beginPath();
     ctx.moveTo(tipX,tipY);
-    ctx.lineTo(tipX-hl*Math.cos(a-ha), tipY-hl*Math.sin(a-ha));
-    ctx.lineTo(tipX-hl*Math.cos(a+ha), tipY-hl*Math.sin(a+ha));
-    ctx.closePath(); ctx.fillStyle='#00e5ff'; ctx.fill();
+    ctx.lineTo(cx+Math.cos(perp)*baseW/2, cy+Math.sin(perp)*baseW/2);
+    ctx.lineTo(cx-Math.cos(a)*tailLen, cy-Math.sin(a)*tailLen);
+    ctx.lineTo(cx-Math.cos(perp)*baseW/2, cy-Math.sin(perp)*baseW/2);
+    ctx.closePath();
+    ctx.fillStyle=handCol;
+    ctx.fill();
 
-    ctx.beginPath(); ctx.arc(cx,cy,Math.max(1.8,s*0.06),0,Math.PI*2);
-    ctx.fillStyle='#00e5ff'; ctx.fill();
+    ctx.beginPath(); ctx.arc(cx,cy,Math.max(1.8,s*0.07),0,Math.PI*2);
+    ctx.fillStyle=handCol; ctx.fill();
   }
 
   // 0=UL 1=Umid 2=UR / 3=Lmid 4=Ctr 5=Rmid / 6=DL 7=Dmid 8=DR
   function generateTrial(){
     const A=[], B=[];
     for(let i=0;i<9;i++){ A[i]=randHour(); B[i]=randHour(); }
-    for(let i=0;i<9;i++){ drawClock('A'+i, A[i]); drawClock('B'+i, B[i]); }
+    drawSide(canvA, A, 'dark');
+    drawSide(canvB, B, 'light');
 
-    const d1=clockDelta(A[3], A[1]);                                    // M1: L to U
-    const d2=wrapSum(clockDelta(A[5], A[7]) + clockDelta(B[3], B[0]));  // M2: R to D + x2(L to UL)
-    const d3=clockDelta(B[1], B[4]);                                    // M3: U to C
-
+    const d1=clockDelta(A[3], A[1]);
+    const d2=wrapSum(clockDelta(A[5], A[7]) + clockDelta(B[3], B[0]));
+    const d3=clockDelta(B[1], B[4]);
     correctAnswer=toCode(d1)+toCode(d2)+toCode(d3);
   }
 
@@ -528,7 +587,6 @@
     startTimer();
   }
 
-  // ---- Method overlay: pauses timer while open ----
   const overlay=document.getElementById('method-overlay');
   document.getElementById('method-btn').addEventListener('click',()=>{
     overlay.classList.remove('hidden');
