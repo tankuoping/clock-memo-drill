@@ -95,12 +95,22 @@
     font-family: 'Archivo', sans-serif;
     font-size: 1.35rem;
     font-weight: 700;
-    color: #00e5ff;
+    color: #00e676;
     letter-spacing: 2px;
     transition: color 0.3s;
     font-variant-numeric: tabular-nums;
   }
   #timer.warn { color: #ff1744; }
+  #verdict {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    min-width: 80px;
+  }
+  #verdict.success { color: #00e676; }
+  #verdict.failed { color: #ff1744; }
 
   /* Puzzle */
   #puzzle { display: flex; gap: 8px; justify-content: center; width: 100%; flex-shrink: 0; }
@@ -165,34 +175,23 @@
     color: #00e5ff;
   }
   .memo-box.filled { border-color: #00e5ff; }
-
-  /* Result */
-  #result-row { display: flex; align-items: baseline; gap: 8px; min-height: 1.1rem; }
-  #result-label {
-    font-family: 'Oswald', sans-serif;
-    font-size: 0.6rem;
-    font-weight: 500;
-    color: #99a;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-  #result {
-    font-size: 0.9rem;
-    letter-spacing: 0.5px;
+  .memo-box .corr {
+    font-size: 0.85rem;
+    color: #ff9800;
+    margin-left: 3px;
     font-weight: 700;
-    font-variant-numeric: tabular-nums;
   }
-  #result.correct { color: #00e676; }
-  #result.wrong { color: #ff1744; }
-  #result.timesup { color: #ff9800; }
-  #correct-reveal {
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: #ccc;
-    letter-spacing: 2px;
-    min-height: 0.9rem;
-    text-align: center;
+  @keyframes flashGreen {
+    0%,100% { background: #12121f; border-color: #00e676; }
+    50% { background: #00e67633; border-color: #00e676; }
   }
+  @keyframes flashRed {
+    0%,100% { background: #12121f; border-color: #ff1744; }
+    50% { background: #ff174433; border-color: #ff1744; }
+  }
+  .memo-box.ok { animation: flashGreen 0.5s ease-in-out 3; border-color: #00e676; color: #00e676; }
+  .memo-box.bad { animation: flashRed 0.5s ease-in-out 3; border-color: #ff1744; color: #ff1744; }
+
 
   /* Keypad */
   #keypad-block { width: 100%; flex-shrink: 0; }
@@ -380,8 +379,9 @@
 <div id="main-card">
 
   <div id="timer-row">
-    <span id="timer-label">Running time</span>
+    <span id="timer-label">Time</span>
     <div id="timer">0.0</div>
+    <span id="verdict"></span>
   </div>
 
   <div id="puzzle">
@@ -411,12 +411,6 @@
       <div class="memo-box" id="box3"></div>
     </div>
   </div>
-
-  <div id="result-row">
-    <span id="result-label" class="hidden">Time achieved</span>
-    <span id="result"></span>
-  </div>
-  <div id="correct-reveal"></div>
 
   <div id="keypad-block">
     <div id="keypad-instruction">Click on these buttons to input the memo</div>
@@ -454,7 +448,7 @@
 </div>
 
 <!-- Footer -->
-<div id="footer">Contact <a href="mailto:tankuoping@gmail.com">tankuoping@gmail.com</a> for feedback</div>
+<div id="footer">Contact <a href="mailto:tankuoping@gmail.com">tankuoping@gmail.com</a> to feedback</div>
 
 <!-- Method overlay -->
 <div id="method-overlay" class="hidden">
@@ -650,9 +644,6 @@
       timedOut=true;
       el.classList.add('warn'); el.textContent='15.0';
       clearInterval(timerInterval);
-      const r=document.getElementById('result');
-      r.className='timesup'; r.textContent="TIME'S UP";
-      document.getElementById('result-label').classList.add('hidden');
     }
   }
 
@@ -676,7 +667,13 @@
   function handleAction(action){
     if(action==='next'){ startDrill(); return; }
     if(!started) return;
-    if(submitted){ startDrill(); return; }
+    if(submitted){
+      if(action==='clear' || action==='back'){
+        drawSide(canvA, Array(9).fill(12), 'dark');
+        drawSide(canvB, Array(9).fill(6), 'light');
+      }
+      return;
+    }
     if(action==='clear'){ currentInput=''; updateDisplay(); }
     else if(action==='back'){ currentInput=currentInput.slice(0,-1); updateDisplay(); }
   }
@@ -685,20 +682,31 @@
     if(submitted||currentInput.length===0) return;
     submitted=true;
     clearInterval(timerInterval);
-    const r=document.getElementById('result');
-    const rev=document.getElementById('correct-reveal');
-    const label=document.getElementById('result-label');
-    const t=elapsed.toFixed(2);
-    const wasLate=timedOut;
-    label.classList.remove('hidden');
-    if(currentInput===correctAnswer){
-      r.className='correct';
-      r.textContent='Success — '+t+'s'+(wasLate?' (late)':'');
-      rev.textContent='';
-    } else {
-      r.className='wrong';
-      r.textContent='Failed — '+t+'s'+(wasLate?' (late)':'');
-      rev.textContent='ans: '+correctAnswer;
+
+    const timerEl=document.getElementById('timer');
+    if(!timedOut){
+      timerEl.textContent=elapsed.toFixed(2);
+    }
+
+    const memoCorrect=(currentInput===correctAnswer);
+    const success=memoCorrect && !timedOut;
+
+    const v=document.getElementById('verdict');
+    v.className=success?'success':'failed';
+    v.textContent=success?'SUCCESS':'FAILED';
+
+    // Flash boxes per-character
+    for(let i=0;i<3;i++){
+      const box=document.getElementById('box'+(i+1));
+      if(currentInput[i]===correctAnswer[i]){
+        box.classList.add('ok');
+      } else {
+        box.classList.add('bad');
+        const corr=document.createElement('span');
+        corr.className='corr';
+        corr.textContent=correctAnswer[i];
+        box.appendChild(corr);
+      }
     }
   }
 
@@ -706,10 +714,8 @@
     primeSpeech();
     clearInterval(timerInterval);
     started=true; submitted=false; timedOut=false; currentInput='';
-    document.getElementById('result').textContent='';
-    document.getElementById('result').className='';
-    document.getElementById('result-label').classList.add('hidden');
-    document.getElementById('correct-reveal').textContent='';
+    const v=document.getElementById('verdict');
+    v.className=''; v.textContent='';
     updateDisplay();
     generateTrial();
     startTimer();
