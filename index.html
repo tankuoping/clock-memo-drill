@@ -3,181 +3,341 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Clock Memo Drill — 7SIM</title>
+<title>Clock Memo Trainer — Luis 3M 7SIM FLIP</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Archivo:wght@400;500;600;700&display=swap');
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     background: #0e0e1a;
     color: #ccc;
-    font-family: 'Courier New', monospace;
-    height: 100dvh;
+    font-family: 'Archivo', sans-serif;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    padding: 4px 6px 6px;
-    overflow: hidden;
+    padding: 8px 10px 10px;
+    gap: 7px;
+    overflow-y: auto;
   }
 
-  #topbar {
+  /* Header */
+  #header {
     display: flex;
-    width: 100%;
-    align-items: center;
     justify-content: space-between;
-    padding: 0 2px;
+    align-items: center;
+    flex-shrink: 0;
+    width: 100%;
+    gap: 8px;
+  }
+  #header-text { text-align: left; }
+  #app-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #00e5ff;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+  }
+  #app-subtitle {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: #aab;
+    letter-spacing: 1px;
+    margin-top: 1px;
+  }
+  #method-btn {
+    background: #1a1a2e;
+    border: 1px solid #556;
+    color: #ccd;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 500;
+    font-size: 0.68rem;
+    padding: 5px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    -webkit-tap-highlight-color: transparent;
+    align-self: stretch;
+    white-space: normal;
+    max-width: 110px;
+    line-height: 1.3;
     flex-shrink: 0;
   }
-  #title { font-size: 0.55rem; letter-spacing: 2px; color: #888; text-transform: uppercase; }
-  #topbar-right { display: flex; align-items: center; gap: 8px; }
-  #method-btn {
-    background: none;
-    border: 1px solid #445;
-    color: #99a;
-    font-family: 'Courier New', monospace;
-    font-size: 0.5rem;
-    padding: 3px 6px;
-    border-radius: 4px;
-    cursor: pointer;
-    letter-spacing: 0.5px;
-    -webkit-tap-highlight-color: transparent;
-    white-space: nowrap;
-  }
-  #timer {
-    font-size: 1.3rem;
-    font-weight: bold;
-    color: #00e5ff;
-    letter-spacing: 3px;
-    transition: color 0.3s;
-  }
-  #timer.warn { color: #ff1744; }
 
+  /* Save Clock boxed */
+  #saveclock-box {
+    text-align: center;
+    flex-shrink: 0;
+    line-height: 1.5;
+    border: 1.5px solid #ff174455;
+    background: #ff174410;
+    border-radius: 10px;
+    padding: 7px 14px;
+    max-width: 380px;
+  }
   #saveclock {
-    font-size: 1rem;
-    font-weight: bold;
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
     letter-spacing: 3px;
     color: #ff1744;
-    text-shadow: 0 0 12px #ff174488;
-    flex-shrink: 0;
-    padding: 2px 0;
+    text-shadow: 0 0 12px #ff174466;
     animation: pulse 2s ease-in-out infinite;
+  }
+  #saveclock-why {
+    font-size: 0.66rem;
+    font-weight: 500;
+    color: #e8a0b0;
+    letter-spacing: 0.3px;
   }
   @keyframes pulse {
     0%, 100% { opacity: 1; }
-    50% { opacity: 0.55; }
+    50% { opacity: 0.6; }
   }
 
-  #puzzle {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    width: 100%;
-    flex-shrink: 0;
+  /* Timer */
+  #timer-row { display: flex; align-items: baseline; gap: 10px; flex-shrink: 0; }
+  #timer-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 500;
+    color: #99a;
+    letter-spacing: 2px;
+    text-transform: uppercase;
   }
+  #timer {
+    font-family: 'Archivo', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #00e5ff;
+    letter-spacing: 2px;
+    transition: color 0.3s;
+    font-variant-numeric: tabular-nums;
+  }
+  #timer.warn { color: #ff1744; }
+
+  /* Puzzle */
+  #puzzle { display: flex; gap: 10px; justify-content: center; width: 100%; flex-shrink: 0; }
   .side { display: flex; flex-direction: column; align-items: center; gap: 2px; }
   .side-label {
-    font-size: 0.6rem;
-    color: #999;
-    letter-spacing: 1px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #ccd;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
   }
   .side-sublabel {
-    font-size: 0.5rem;
-    color: #777;
+    font-size: 0.58rem;
+    color: #99a;
     font-style: italic;
-    min-height: 0.7rem;
+    min-height: 0.75rem;
   }
   canvas.side-canvas { display: block; }
 
-  .flex-gap { flex: 1; }
-
+  /* Memo */
+  #memo-block { flex-shrink: 0; text-align: center; }
+  #memo-heading {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #ccd;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
   #legend {
-    font-size: 0.7rem;
-    color: #999;
-    letter-spacing: 1px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #aab;
+    letter-spacing: 0.5px;
     text-align: left;
-    line-height: 1.7;
+    line-height: 1.65;
+    display: inline-block;
+  }
+  #legend b { color: #ddd; font-weight: 600; }
+
+  /* Answer row: boxes centered, start right */
+  #answer-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
     flex-shrink: 0;
-    align-self: center;
+    width: 100%;
   }
-
-  #answer-display {
+  #answer-row {
+    position: relative;
+    width: 100%;
+    max-width: 442px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #answer-boxes { display: flex; gap: 10px; }
+  .memo-box {
+    width: 46px;
+    height: 46px;
+    border: 2px solid #334;
+    border-radius: 9px;
+    background: #12121f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Archivo', sans-serif;
     font-size: 1.5rem;
-    letter-spacing: 8px;
+    font-weight: 700;
     color: #00e5ff;
-    font-weight: bold;
-    min-height: 1.9rem;
-    text-align: center;
-    min-width: 100px;
   }
-  #answer-display.placeholder { color: #445; }
-
-  #result {
-    font-size: 0.8rem;
-    letter-spacing: 2px;
-    min-height: 1rem;
+  .memo-box.filled { border-color: #00e5ff; }
+  .memo-box-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.55rem;
+    font-weight: 500;
+    color: #99a;
     text-align: center;
-    color: #aaa;
+    margin-top: 3px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .memo-box-wrap { display: flex; flex-direction: column; align-items: center; }
+
+  #start-btn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #00e5ff18;
+    border: 1.5px solid #00e5ff;
+    color: #00e5ff;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #start-btn:active { background: #00e5ff33; }
+
+  /* Result */
+  #result-row { display: flex; align-items: baseline; gap: 8px; min-height: 1.2rem; }
+  #result-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: #99a;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  #result {
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
   }
   #result.correct { color: #00e676; }
   #result.wrong { color: #ff1744; }
   #result.timesup { color: #ff9800; }
-
   #correct-reveal {
-    font-size: 0.75rem;
-    color: #bbb;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #ccc;
     letter-spacing: 2px;
-    min-height: 0.9rem;
+    min-height: 1rem;
     text-align: center;
   }
 
-  #keypad { display: flex; flex-direction: column; gap: 5px; width: 100%; flex-shrink: 0; }
-  .key-row { display: flex; gap: 5px; justify-content: center; }
+  /* Keypad */
+  #keypad-block { width: 100%; flex-shrink: 0; }
+  #keypad-instruction {
+    font-size: 0.64rem;
+    font-weight: 500;
+    color: #99a;
+    text-align: center;
+    letter-spacing: 0.3px;
+    margin-bottom: 5px;
+  }
+  #keypad { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+  .key-row { display: flex; gap: 6px; justify-content: center; max-width: 442px; margin: 0 auto; width: 100%; }
   .key {
     flex: 1;
-    max-width: 52px;
-    height: 40px;
+    max-width: 58px;
+    height: 46px;
     background: #181828;
     border: 1.5px solid #2a2a40;
     color: #eee;
-    font-family: 'Courier New', monospace;
-    font-size: 1rem;
-    font-weight: bold;
-    border-radius: 6px;
+    font-family: 'Archivo', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    border-radius: 8px;
     cursor: pointer;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    line-height: 1.15;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
+  }
+  .key .sub {
+    font-size: 0.55rem;
+    font-weight: 500;
+    color: #cc9866;
   }
   .key:active { background: #00e5ff22; border-color: #00e5ff; }
   .key.neg { color: #ffb74d; }
   .key.neg:active { background: #ff980022; border-color: #ff9800; }
-  .key.action { color: #ccc; font-size: 0.8rem; letter-spacing: 1px; background: #141422; }
+  .key.action {
+    color: #ccd;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 500;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    background: #141422;
+  }
   .key.action:active { background: #ffffff11; }
-  .key.submit-key { color: #00e676; border-color: #00e676; font-size: 0.8rem; letter-spacing: 1px; background: #00e67611; }
+  .key.submit-key {
+    color: #00e676;
+    border-color: #00e676;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    background: #00e67611;
+  }
   .key.submit-key:active { background: #00e67633; }
-  .key.next-key { color: #aaa; border-color: #444; font-size: 0.75rem; letter-spacing: 1px; background: #141422; }
+  .key.next-key {
+    color: #bbb;
+    border-color: #444;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 500;
+    font-size: 0.78rem;
+    letter-spacing: 1px;
+    background: #141422;
+  }
   .key.next-key:active { background: #ffffff11; border-color: #888; }
 
-  #start-btn {
-    background: #00e5ff18;
-    border: 1.5px solid #00e5ff;
-    color: #00e5ff;
-    font-family: 'Courier New', monospace;
-    font-size: 0.9rem;
-    padding: 10px 40px;
-    border-radius: 6px;
-    cursor: pointer;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    -webkit-tap-highlight-color: transparent;
+  /* Footer */
+  #footer {
+    font-size: 0.6rem;
+    font-weight: 500;
+    color: #778;
+    letter-spacing: 0.3px;
+    text-align: center;
     flex-shrink: 0;
+    padding-top: 2px;
   }
+  #footer a { color: #9ab; text-decoration: none; }
 
-  #answer-section { flex-direction: column; align-items: center; gap: 2px; }
   .hidden { display: none !important; }
 
+  /* Method overlay */
   #method-overlay {
     position: fixed;
     inset: 0;
@@ -200,7 +360,9 @@
     overflow-y: auto;
   }
   #method-card h2 {
-    font-size: 0.9rem;
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
     color: #00e5ff;
     letter-spacing: 2px;
     text-align: center;
@@ -210,47 +372,63 @@
   .m-section { border-top: 1px solid #2e2e48; padding: 10px 0; }
   .m-section:first-of-type { border-top: none; padding-top: 0; }
   .m-heading {
-    font-size: 0.6rem;
-    color: #888;
-    letter-spacing: 2px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: #99a;
+    letter-spacing: 2.5px;
     text-transform: uppercase;
     margin-bottom: 6px;
   }
-  .m-row { display: flex; font-size: 0.75rem; line-height: 1.7; }
-  .m-key { color: #ffb74d; width: 84px; flex-shrink: 0; font-weight: bold; }
+  .m-row { display: flex; font-size: 0.82rem; font-weight: 500; line-height: 1.75; }
+  .m-key { color: #ffb74d; width: 92px; flex-shrink: 0; font-weight: 700; }
   .m-val { color: #ddd; }
   .m-val .paren { color: #7a9; }
-  .m-num { color: #00e5ff; width: 38px; flex-shrink: 0; font-weight: bold; }
-  .m-pin { color: #ffb74d; width: 46px; flex-shrink: 0; font-weight: bold; }
+  .m-num { color: #00e5ff; width: 40px; flex-shrink: 0; font-weight: 700; }
+  .m-pin { color: #ffb74d; width: 46px; flex-shrink: 0; font-weight: 700; }
   #method-close {
     display: block;
     margin: 14px auto 0;
     background: #00e5ff18;
     border: 1.5px solid #00e5ff;
     color: #00e5ff;
-    font-family: 'Courier New', monospace;
-    font-size: 0.8rem;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
     padding: 8px 32px;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     letter-spacing: 2px;
+    text-transform: uppercase;
     -webkit-tap-highlight-color: transparent;
   }
 </style>
 </head>
 <body>
 
-<div id="topbar">
-  <span id="title">Clock Memo · 7SIM</span>
-  <div id="topbar-right">
-    <button id="method-btn">LUIS 3M 7SIM FLIP METHOD</button>
-    <div id="timer">0.0</div>
+<!-- Header -->
+<div id="header">
+  <div id="header-text">
+    <div id="app-title">Clock Memo Trainer</div>
+    <div id="app-subtitle">For Luis 3M 7SIM FLIP Method</div>
   </div>
+  <button id="method-btn">Method Details</button>
 </div>
 
-<div id="saveclock">#SAVECLOCK</div>
+<!-- Save Clock -->
+<div id="saveclock-box">
+  <div id="saveclock">#SAVECLOCK</div>
+  <div id="saveclock-why">WCA is removing Clock as an official event — help stop them #saveclock</div>
+</div>
 
-<div id="puzzle" class="hidden">
+<!-- Running time -->
+<div id="timer-row">
+  <span id="timer-label">Running time</span>
+  <div id="timer">0.0</div>
+</div>
+
+<!-- Puzzle -->
+<div id="puzzle">
   <div class="side">
     <span class="side-label">Side A</span>
     <span class="side-sublabel">&nbsp;</span>
@@ -263,47 +441,74 @@
   </div>
 </div>
 
-<div id="legend" class="hidden">
-  1. A: L→U<br>
-  2. A: R→D + B: L→UL<br>
-  3. B: U→C
+<!-- Memo -->
+<div id="memo-block">
+  <div id="memo-heading">Memo</div>
+  <div id="legend">
+    <b>1.</b> A: L→U<br>
+    <b>2.</b> A: R→D + B: L→UL<br>
+    <b>3.</b> B: U→C
+  </div>
 </div>
 
-<div class="flex-gap"></div>
-
-<div id="answer-section" class="hidden">
-  <div id="answer-display" class="placeholder">_ _ _</div>
-  <div id="result"></div>
+<!-- Answer -->
+<div id="answer-section">
+  <div id="answer-row">
+    <div id="answer-boxes">
+      <div class="memo-box-wrap">
+        <div class="memo-box" id="box1"></div>
+        <div class="memo-box-label">Memo 1</div>
+      </div>
+      <div class="memo-box-wrap">
+        <div class="memo-box" id="box2"></div>
+        <div class="memo-box-label">Memo 2</div>
+      </div>
+      <div class="memo-box-wrap">
+        <div class="memo-box" id="box3"></div>
+        <div class="memo-box-label">Memo 3</div>
+      </div>
+    </div>
+    <button id="start-btn">Start</button>
+  </div>
+  <div id="result-row">
+    <span id="result-label" class="hidden">Time achieved</span>
+    <span id="result"></span>
+  </div>
   <div id="correct-reveal"></div>
 </div>
 
-<div id="keypad" class="hidden" style="margin-top:4px;">
-  <div class="key-row">
-    <div class="key neg" data-val="a">a</div>
-    <div class="key neg" data-val="b">b</div>
-    <div class="key neg" data-val="c">c</div>
-    <div class="key neg" data-val="d">d</div>
-    <div class="key neg" data-val="e">e</div>
-  </div>
-  <div class="key-row">
-    <div class="key" data-val="0">0</div>
-    <div class="key" data-val="1">1</div>
-    <div class="key" data-val="2">2</div>
-    <div class="key" data-val="3">3</div>
-    <div class="key" data-val="4">4</div>
-    <div class="key" data-val="5">5</div>
-    <div class="key" data-val="6">6</div>
-  </div>
-  <div class="key-row">
-    <div class="key action" data-action="clear">CLR</div>
-    <div class="key action" data-action="back">⌫</div>
-    <div class="key next-key" data-action="next">NEXT</div>
-    <div class="key submit-key" data-action="submit">OK</div>
+<!-- Keypad -->
+<div id="keypad-block">
+  <div id="keypad-instruction">Click on these buttons to input the memo</div>
+  <div id="keypad">
+    <div class="key-row">
+      <div class="key neg" data-val="a">a<span class="sub">(-1)</span></div>
+      <div class="key neg" data-val="b">b<span class="sub">(-2)</span></div>
+      <div class="key neg" data-val="c">c<span class="sub">(-3)</span></div>
+      <div class="key neg" data-val="d">d<span class="sub">(-4)</span></div>
+      <div class="key neg" data-val="e">e<span class="sub">(-5)</span></div>
+    </div>
+    <div class="key-row">
+      <div class="key" data-val="0">0</div>
+      <div class="key" data-val="1">1</div>
+      <div class="key" data-val="2">2</div>
+      <div class="key" data-val="3">3</div>
+      <div class="key" data-val="4">4</div>
+      <div class="key" data-val="5">5</div>
+      <div class="key" data-val="6">6</div>
+    </div>
+    <div class="key-row">
+      <div class="key action" data-action="clear">CLR</div>
+      <div class="key action" data-action="back">⌫</div>
+      <div class="key next-key" data-action="next">NEXT</div>
+    </div>
   </div>
 </div>
 
-<button id="start-btn">START</button>
+<!-- Footer -->
+<div id="footer">Contact <a href="mailto:tankuoping@gmail.com">tankuoping@gmail.com</a> for feedback</div>
 
+<!-- Method overlay -->
 <div id="method-overlay" class="hidden">
   <div id="method-card">
     <h2>Luis 3M 7SIM Flip Method</h2>
@@ -337,23 +542,22 @@
 </div>
 
 <script>
-  // ---- Sizing ----
   const SCREEN_W = Math.min(window.innerWidth, 420);
-  const SIDE_W = Math.floor((SCREEN_W - 8 - 12) / 2);   // each side canvas
-  const PAD = Math.max(5, SIDE_W * 0.04);                // body padding around clocks
-  const GAP = Math.max(3, SIDE_W * 0.025);               // gap between clocks
-  const SZ  = (SIDE_W - 2*PAD - 2*GAP) / 3;              // clock diameter
+  const SIDE_W = Math.floor((SCREEN_W - 10 - 20) / 2);
+  const PAD = Math.max(5, SIDE_W * 0.04);
+  const GAP = Math.max(3, SIDE_W * 0.025);
+  const SZ  = (SIDE_W - 2*PAD - 2*GAP) / 3;
 
   const canvA = document.getElementById('sideA');
   const canvB = document.getElementById('sideB');
   [canvA, canvB].forEach(c => { c.width = SIDE_W; c.height = SIDE_W; });
 
-  // Clock center for (row, col)
   function clockCX(col){ return PAD + SZ/2 + col*(SZ+GAP); }
   function clockCY(row){ return PAD + SZ/2 + row*(SZ+GAP); }
 
   let timerInterval=null, startTime=null, elapsed=0;
   let correctAnswer='', currentInput='', submitted=false, timedOut=false;
+  let started=false;
   let speechPrimed=false, lastSpoke={};
   let pausedAt=null;
 
@@ -364,7 +568,6 @@
   function wrapSum(s){ if(s>6)s-=12; if(s<-6)s+=12; if(s===-6)s=6; return s; }
   function toCode(v){ if(v===6||v===-6)return '6'; return codeMap[v]??String(v); }
 
-  // ---- Draw a full puzzle side with body outline, 9 clocks, 4 pins ----
   function drawSide(canvas, hours, theme){
     const ctx = canvas.getContext('2d');
     const W = canvas.width;
@@ -379,27 +582,22 @@
     const pinCol  = theme==='dark' ? '#e8e4d8' : '#1a1a1e';
     const pinRim  = theme==='dark' ? '#999'    : '#000';
 
-    // --- Puzzle body: circular outline with 4 corner lobes (real puzzle shape) ---
     const bulgeR = SZ/2 + PAD*0.8;
     ctx.fillStyle = bodyCol;
     ctx.beginPath();
-    // Main circular body
     ctx.arc(W/2, W/2, W/2 - 1.5, 0, Math.PI*2);
-    // 4 corner lobes where corner clocks bulge past the circle
     for(const [r,c] of [[0,0],[0,2],[2,0],[2,2]]){
       ctx.moveTo(clockCX(c)+bulgeR, clockCY(r));
       ctx.arc(clockCX(c), clockCY(r), bulgeR, 0, Math.PI*2);
     }
     ctx.fill();
 
-    // Rim stroke
     ctx.strokeStyle = bodyRim;
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.arc(W/2, W/2, W/2 - 1.5, 0, Math.PI*2);
     ctx.stroke();
 
-    // --- 9 clock faces ---
     for(let r=0;r<3;r++){
       for(let c=0;c<3;c++){
         drawFace(ctx, clockCX(c), clockCY(r), SZ/2 - 1, hours[r*3+c],
@@ -407,19 +605,15 @@
       }
     }
 
-    // --- 4 pins at interior intersections ---
     const pinR = Math.max(3.5, SZ*0.14);
     for(let r=0;r<2;r++){
       for(let c=0;c<2;c++){
         const px = (clockCX(c)+clockCX(c+1))/2;
         const py = (clockCY(r)+clockCY(r+1))/2;
-        // Pin shadow ring
         ctx.beginPath(); ctx.arc(px, py, pinR+1.2, 0, Math.PI*2);
         ctx.fillStyle = pinRim; ctx.fill();
-        // Pin head
         ctx.beginPath(); ctx.arc(px, py, pinR, 0, Math.PI*2);
         ctx.fillStyle = pinCol; ctx.fill();
-        // Highlight
         ctx.beginPath(); ctx.arc(px - pinR*0.3, py - pinR*0.3, pinR*0.35, 0, Math.PI*2);
         ctx.fillStyle = theme==='dark' ? '#fff' : '#444';
         ctx.globalAlpha = 0.5;
@@ -430,11 +624,9 @@
   }
 
   function drawFace(ctx, cx, cy, r, hour, faceCol, tickCol, majorCol, handCol){
-    // Face
     ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
     ctx.fillStyle=faceCol; ctx.fill();
 
-    // Ticks
     const s = r*2;
     for(let i=1;i<=12;i++){
       const a=(i/12)*Math.PI*2-Math.PI/2;
@@ -450,13 +642,6 @@
       ctx.stroke();
     }
 
-    // Red 12 marker
-    ctx.beginPath();
-    ctx.arc(cx, cy-r+Math.max(3,s*0.09), Math.max(1.4,s*0.033), 0, Math.PI*2);
-    ctx.fillStyle='#e53935';
-    ctx.fill();
-
-    // Classic hand: kite pointer + tail + hub
     const a=(hour/12)*Math.PI*2-Math.PI/2;
     const handLen=r-4;
     const tailLen=r*0.28;
@@ -476,13 +661,11 @@
     ctx.fillStyle=handCol; ctx.fill();
   }
 
-  // 0=UL 1=Umid 2=UR / 3=Lmid 4=Ctr 5=Rmid / 6=DL 7=Dmid 8=DR
   function generateTrial(){
     const A=[], B=[];
     for(let i=0;i<9;i++){ A[i]=randHour(); B[i]=randHour(); }
     drawSide(canvA, A, 'dark');
     drawSide(canvB, B, 'light');
-
     const d1=clockDelta(A[3], A[1]);
     const d2=wrapSum(clockDelta(A[5], A[7]) + clockDelta(B[3], B[0]));
     const d3=clockDelta(B[1], B[4]);
@@ -521,21 +704,21 @@
       clearInterval(timerInterval);
       const r=document.getElementById('result');
       r.className='timesup'; r.textContent="TIME'S UP";
+      document.getElementById('result-label').classList.add('hidden');
     }
   }
 
   function updateDisplay(){
-    const el=document.getElementById('answer-display');
-    if(currentInput.length===0){
-      el.textContent='_ _ _'; el.className='placeholder';
-    } else {
-      el.textContent=currentInput.padEnd(3,'_').split('').join(' ');
-      el.className='';
+    for(let i=0;i<3;i++){
+      const box=document.getElementById('box'+(i+1));
+      const ch=currentInput[i]||'';
+      box.textContent=ch;
+      box.className='memo-box'+(ch?' filled':'');
     }
   }
 
   function handleKey(val){
-    if(submitted) return;
+    if(!started||submitted) return;
     if(currentInput.length<3){
       currentInput+=val; updateDisplay();
       if(currentInput.length===3) submitAnswer();
@@ -543,6 +726,7 @@
   }
 
   function handleAction(action){
+    if(!started){ if(action==='next'){ startDrill(); } return; }
     if(action==='next'){ startDrill(); return; }
     if(submitted){ startDrill(); return; }
     if(action==='clear'){ currentInput=''; updateDisplay(); }
@@ -556,15 +740,17 @@
     clearInterval(timerInterval);
     const r=document.getElementById('result');
     const rev=document.getElementById('correct-reveal');
+    const label=document.getElementById('result-label');
     const t=elapsed.toFixed(2);
     const wasLate=timedOut;
+    label.classList.remove('hidden');
     if(currentInput===correctAnswer){
       r.className='correct';
-      r.textContent='✓ '+t+'s'+(wasLate?' (late)':'');
+      r.textContent='Success — '+t+'s'+(wasLate?' (late)':'');
       rev.textContent='';
     } else {
       r.className='wrong';
-      r.textContent='✗ '+t+'s'+(wasLate?' (late)':'');
+      r.textContent='Failed — '+t+'s'+(wasLate?' (late)':'');
       rev.textContent='ans: '+correctAnswer;
     }
   }
@@ -572,25 +758,28 @@
   function startDrill(){
     primeSpeech();
     clearInterval(timerInterval);
-    submitted=false; timedOut=false; currentInput='';
+    started=true; submitted=false; timedOut=false; currentInput='';
     document.getElementById('result').textContent='';
     document.getElementById('result').className='';
+    document.getElementById('result-label').classList.add('hidden');
     document.getElementById('correct-reveal').textContent='';
     updateDisplay();
-    document.getElementById('puzzle').classList.remove('hidden');
-    document.getElementById('legend').classList.remove('hidden');
-    document.getElementById('answer-section').classList.remove('hidden');
-    document.getElementById('answer-section').style.display='flex';
-    document.getElementById('keypad').classList.remove('hidden');
-    document.getElementById('start-btn').classList.add('hidden');
     generateTrial();
     startTimer();
   }
 
+  // Initial idle state: all hands at 12, boxes blank, timer 0.0
+  function drawIdle(){
+    drawSide(canvA, Array(9).fill(12), 'dark');
+    drawSide(canvB, Array(9).fill(6), 'light');
+    updateDisplay();
+  }
+  drawIdle();
+
   const overlay=document.getElementById('method-overlay');
   document.getElementById('method-btn').addEventListener('click',()=>{
     overlay.classList.remove('hidden');
-    if(timerInterval && !submitted && !timedOut){
+    if(timerInterval && started && !submitted && !timedOut){
       clearInterval(timerInterval);
       pausedAt=Date.now();
     }
