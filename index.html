@@ -16,8 +16,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 8px 10px 10px;
-    gap: 7px;
+    padding: 6px 8px 8px;
+    gap: 5px;
     overflow-y: auto;
   }
 
@@ -28,23 +28,23 @@
     align-items: center;
     flex-shrink: 0;
     width: 100%;
+    max-width: 442px;
     gap: 8px;
   }
   #header-text { text-align: left; }
   #app-title {
     font-family: 'Oswald', sans-serif;
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     font-weight: 600;
     color: #00e5ff;
-    letter-spacing: 2.5px;
+    letter-spacing: 2px;
     text-transform: uppercase;
   }
   #app-subtitle {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 500;
     color: #aab;
-    letter-spacing: 1px;
-    margin-top: 1px;
+    letter-spacing: 0.8px;
   }
   #method-btn {
     background: #1a1a2e;
@@ -52,7 +52,7 @@
     color: #ccd;
     font-family: 'Oswald', sans-serif;
     font-weight: 500;
-    font-size: 0.68rem;
+    font-size: 0.65rem;
     padding: 5px 12px;
     border-radius: 6px;
     cursor: pointer;
@@ -61,47 +61,31 @@
     -webkit-tap-highlight-color: transparent;
     align-self: stretch;
     white-space: normal;
-    max-width: 110px;
+    max-width: 105px;
     line-height: 1.3;
     flex-shrink: 0;
   }
 
-  /* Save Clock boxed */
-  #saveclock-box {
-    text-align: center;
+  /* Main card: running time -> keypad */
+  #main-card {
+    width: 100%;
+    max-width: 458px;
+    border: 1.5px solid #2e2e48;
+    background: #12121f88;
+    border-radius: 14px;
+    padding: 7px 8px 9px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
     flex-shrink: 0;
-    line-height: 1.5;
-    border: 1.5px solid #ff174455;
-    background: #ff174410;
-    border-radius: 10px;
-    padding: 7px 14px;
-    max-width: 380px;
-  }
-  #saveclock {
-    font-family: 'Oswald', sans-serif;
-    font-size: 1.05rem;
-    font-weight: 600;
-    letter-spacing: 3px;
-    color: #ff1744;
-    text-shadow: 0 0 12px #ff174466;
-    animation: pulse 2s ease-in-out infinite;
-  }
-  #saveclock-why {
-    font-size: 0.66rem;
-    font-weight: 500;
-    color: #e8a0b0;
-    letter-spacing: 0.3px;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
   }
 
   /* Timer */
   #timer-row { display: flex; align-items: baseline; gap: 10px; flex-shrink: 0; }
   #timer-label {
     font-family: 'Oswald', sans-serif;
-    font-size: 0.68rem;
+    font-size: 0.62rem;
     font-weight: 500;
     color: #99a;
     letter-spacing: 2px;
@@ -109,7 +93,7 @@
   }
   #timer {
     font-family: 'Archivo', sans-serif;
-    font-size: 1.5rem;
+    font-size: 1.35rem;
     font-weight: 700;
     color: #00e5ff;
     letter-spacing: 2px;
@@ -119,68 +103,56 @@
   #timer.warn { color: #ff1744; }
 
   /* Puzzle */
-  #puzzle { display: flex; gap: 10px; justify-content: center; width: 100%; flex-shrink: 0; }
-  .side { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  #puzzle { display: flex; gap: 8px; justify-content: center; width: 100%; flex-shrink: 0; }
+  .side { display: flex; flex-direction: column; align-items: center; gap: 1px; }
   .side-label {
     font-family: 'Oswald', sans-serif;
-    font-size: 0.7rem;
+    font-size: 0.66rem;
     font-weight: 600;
     color: #ccd;
     letter-spacing: 1.5px;
     text-transform: uppercase;
   }
   .side-sublabel {
-    font-size: 0.58rem;
+    font-size: 0.55rem;
     color: #99a;
     font-style: italic;
-    min-height: 0.75rem;
+    min-height: 0.7rem;
   }
   canvas.side-canvas { display: block; }
 
-  /* Memo */
-  #memo-block { flex-shrink: 0; text-align: center; }
-  #memo-heading {
-    font-family: 'Oswald', sans-serif;
-    font-size: 0.72rem;
-    font-weight: 600;
-    color: #ccd;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-    margin-bottom: 3px;
+  /* Answer row: 3 labelled boxes + start, spanning keypad width */
+  #answer-row {
+    width: 100%;
+    max-width: 442px;
+    display: flex;
+    gap: 6px;
+    align-items: flex-end;
+    justify-content: center;
   }
-  #legend {
-    font-size: 0.78rem;
-    font-weight: 500;
-    color: #aab;
-    letter-spacing: 0.5px;
-    text-align: left;
-    line-height: 1.65;
-    display: inline-block;
-  }
-  #legend b { color: #ddd; font-weight: 600; }
-
-  /* Answer row: boxes centered, start right */
-  #answer-section {
+  .memo-box-wrap {
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
-    flex-shrink: 0;
-    width: 100%;
+    gap: 2px;
   }
-  #answer-row {
-    position: relative;
-    width: 100%;
-    max-width: 442px;
-    margin: 0 auto;
+  .memo-instruction {
+    font-size: 0.56rem;
+    font-weight: 600;
+    color: #aab;
+    letter-spacing: 0.3px;
+    text-align: center;
+    line-height: 1.25;
+    min-height: 1.5em;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    align-items: flex-end;
   }
-  #answer-boxes { display: flex; gap: 10px; }
+  .memo-instruction b { color: #00e5ff; margin-right: 2px; }
   .memo-box {
-    width: 46px;
-    height: 46px;
+    width: 100%;
+    max-width: 84px;
+    height: 48px;
     border: 2px solid #334;
     border-radius: 9px;
     background: #12121f;
@@ -193,50 +165,19 @@
     color: #00e5ff;
   }
   .memo-box.filled { border-color: #00e5ff; }
-  .memo-box-label {
-    font-family: 'Oswald', sans-serif;
-    font-size: 0.55rem;
-    font-weight: 500;
-    color: #99a;
-    text-align: center;
-    margin-top: 3px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-  .memo-box-wrap { display: flex; flex-direction: column; align-items: center; }
-
-  #start-btn {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    background: #00e5ff18;
-    border: 1.5px solid #00e5ff;
-    color: #00e5ff;
-    font-family: 'Oswald', sans-serif;
-    font-weight: 600;
-    font-size: 0.8rem;
-    padding: 10px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    -webkit-tap-highlight-color: transparent;
-  }
-  #start-btn:active { background: #00e5ff33; }
 
   /* Result */
-  #result-row { display: flex; align-items: baseline; gap: 8px; min-height: 1.2rem; }
+  #result-row { display: flex; align-items: baseline; gap: 8px; min-height: 1.1rem; }
   #result-label {
     font-family: 'Oswald', sans-serif;
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     font-weight: 500;
     color: #99a;
     letter-spacing: 2px;
     text-transform: uppercase;
   }
   #result {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     letter-spacing: 0.5px;
     font-weight: 700;
     font-variant-numeric: tabular-nums;
@@ -245,35 +186,35 @@
   #result.wrong { color: #ff1744; }
   #result.timesup { color: #ff9800; }
   #correct-reveal {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     font-weight: 600;
     color: #ccc;
     letter-spacing: 2px;
-    min-height: 1rem;
+    min-height: 0.9rem;
     text-align: center;
   }
 
   /* Keypad */
   #keypad-block { width: 100%; flex-shrink: 0; }
   #keypad-instruction {
-    font-size: 0.64rem;
+    font-size: 0.6rem;
     font-weight: 500;
     color: #99a;
     text-align: center;
     letter-spacing: 0.3px;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
   }
-  #keypad { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+  #keypad { display: flex; flex-direction: column; gap: 5px; width: 100%; }
   .key-row { display: flex; gap: 6px; justify-content: center; max-width: 442px; margin: 0 auto; width: 100%; }
   .key {
     flex: 1;
     max-width: 58px;
-    height: 46px;
+    height: 44px;
     background: #181828;
     border: 1.5px solid #2a2a40;
     color: #eee;
     font-family: 'Archivo', sans-serif;
-    font-size: 1.05rem;
+    font-size: 1rem;
     font-weight: 700;
     border-radius: 8px;
     cursor: pointer;
@@ -285,11 +226,7 @@
     -webkit-tap-highlight-color: transparent;
     user-select: none;
   }
-  .key .sub {
-    font-size: 0.55rem;
-    font-weight: 500;
-    color: #cc9866;
-  }
+  .key .sub { font-size: 0.52rem; font-weight: 500; color: #cc9866; }
   .key:active { background: #00e5ff22; border-color: #00e5ff; }
   .key.neg { color: #ffb74d; }
   .key.neg:active { background: #ff980022; border-color: #ff9800; }
@@ -297,41 +234,65 @@
     color: #ccd;
     font-family: 'Oswald', sans-serif;
     font-weight: 500;
-    font-size: 0.8rem;
-    letter-spacing: 1px;
-    background: #141422;
-  }
-  .key.action:active { background: #ffffff11; }
-  .key.submit-key {
-    color: #00e676;
-    border-color: #00e676;
-    font-family: 'Oswald', sans-serif;
-    font-weight: 600;
-    font-size: 0.8rem;
-    letter-spacing: 1px;
-    background: #00e67611;
-  }
-  .key.submit-key:active { background: #00e67633; }
-  .key.next-key {
-    color: #bbb;
-    border-color: #444;
-    font-family: 'Oswald', sans-serif;
-    font-weight: 500;
     font-size: 0.78rem;
     letter-spacing: 1px;
     background: #141422;
   }
-  .key.next-key:active { background: #ffffff11; border-color: #888; }
+  .key.action:active { background: #ffffff11; }
+  .key.next-key {
+    flex: 2.5;
+    max-width: 180px;
+    color: #00e5ff;
+    border-color: #00e5ff;
+    border-width: 2px;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    background: #00e5ff1e;
+  }
+  .key.next-key:active { background: #00e5ff3a; }
+
+  /* Save Clock boxed - bottom */
+  #saveclock-box {
+    text-align: center;
+    flex-shrink: 0;
+    line-height: 1.45;
+    border: 1.5px solid #ff174455;
+    background: #ff174410;
+    border-radius: 10px;
+    padding: 6px 14px;
+    max-width: 442px;
+    width: 100%;
+  }
+  #saveclock {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    color: #ff1744;
+    text-shadow: 0 0 12px #ff174466;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  #saveclock-why {
+    font-size: 0.62rem;
+    font-weight: 500;
+    color: #e8a0b0;
+    letter-spacing: 0.3px;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
 
   /* Footer */
   #footer {
-    font-size: 0.6rem;
+    font-size: 0.58rem;
     font-weight: 500;
     color: #778;
     letter-spacing: 0.3px;
     text-align: center;
     flex-shrink: 0;
-    padding-top: 2px;
   }
   #footer a { color: #9ab; text-decoration: none; }
 
@@ -415,94 +376,81 @@
   <button id="method-btn">Method Details</button>
 </div>
 
-<!-- Save Clock -->
-<div id="saveclock-box">
-  <div id="saveclock">#SAVECLOCK</div>
-  <div id="saveclock-why">WCA is removing Clock as an official event — help stop them #saveclock</div>
-</div>
+<!-- Main card -->
+<div id="main-card">
 
-<!-- Running time -->
-<div id="timer-row">
-  <span id="timer-label">Running time</span>
-  <div id="timer">0.0</div>
-</div>
-
-<!-- Puzzle -->
-<div id="puzzle">
-  <div class="side">
-    <span class="side-label">Side A</span>
-    <span class="side-sublabel">&nbsp;</span>
-    <canvas class="side-canvas" id="sideA"></canvas>
+  <div id="timer-row">
+    <span id="timer-label">Running time</span>
+    <div id="timer">0.0</div>
   </div>
-  <div class="side">
-    <span class="side-label">Side B</span>
-    <span class="side-sublabel">After vertical flip</span>
-    <canvas class="side-canvas" id="sideB"></canvas>
-  </div>
-</div>
 
-<!-- Memo -->
-<div id="memo-block">
-  <div id="memo-heading">Memo</div>
-  <div id="legend">
-    <b>1.</b> A: L→U<br>
-    <b>2.</b> A: R→D + B: L→UL<br>
-    <b>3.</b> B: U→C
-  </div>
-</div>
-
-<!-- Answer -->
-<div id="answer-section">
-  <div id="answer-row">
-    <div id="answer-boxes">
-      <div class="memo-box-wrap">
-        <div class="memo-box" id="box1"></div>
-        <div class="memo-box-label">Memo 1</div>
-      </div>
-      <div class="memo-box-wrap">
-        <div class="memo-box" id="box2"></div>
-        <div class="memo-box-label">Memo 2</div>
-      </div>
-      <div class="memo-box-wrap">
-        <div class="memo-box" id="box3"></div>
-        <div class="memo-box-label">Memo 3</div>
-      </div>
+  <div id="puzzle">
+    <div class="side">
+      <span class="side-label">Side A</span>
+      <span class="side-sublabel">&nbsp;</span>
+      <canvas class="side-canvas" id="sideA"></canvas>
     </div>
-    <button id="start-btn">Start</button>
+    <div class="side">
+      <span class="side-label">Side B</span>
+      <span class="side-sublabel">After vertical flip</span>
+      <canvas class="side-canvas" id="sideB"></canvas>
+    </div>
   </div>
+
+  <div id="answer-row">
+    <div class="memo-box-wrap">
+      <div class="memo-instruction"><span><b>1.</b> A: L→U</span></div>
+      <div class="memo-box" id="box1"></div>
+    </div>
+    <div class="memo-box-wrap">
+      <div class="memo-instruction"><span><b>2.</b> A: R→D +<br>B: L→UL</span></div>
+      <div class="memo-box" id="box2"></div>
+    </div>
+    <div class="memo-box-wrap">
+      <div class="memo-instruction"><span><b>3.</b> B: U→C</span></div>
+      <div class="memo-box" id="box3"></div>
+    </div>
+  </div>
+
   <div id="result-row">
     <span id="result-label" class="hidden">Time achieved</span>
     <span id="result"></span>
   </div>
   <div id="correct-reveal"></div>
-</div>
 
-<!-- Keypad -->
-<div id="keypad-block">
-  <div id="keypad-instruction">Click on these buttons to input the memo</div>
-  <div id="keypad">
-    <div class="key-row">
-      <div class="key neg" data-val="a">a<span class="sub">(-1)</span></div>
-      <div class="key neg" data-val="b">b<span class="sub">(-2)</span></div>
-      <div class="key neg" data-val="c">c<span class="sub">(-3)</span></div>
-      <div class="key neg" data-val="d">d<span class="sub">(-4)</span></div>
-      <div class="key neg" data-val="e">e<span class="sub">(-5)</span></div>
-    </div>
-    <div class="key-row">
-      <div class="key" data-val="0">0</div>
-      <div class="key" data-val="1">1</div>
-      <div class="key" data-val="2">2</div>
-      <div class="key" data-val="3">3</div>
-      <div class="key" data-val="4">4</div>
-      <div class="key" data-val="5">5</div>
-      <div class="key" data-val="6">6</div>
-    </div>
-    <div class="key-row">
-      <div class="key action" data-action="clear">CLR</div>
-      <div class="key action" data-action="back">⌫</div>
-      <div class="key next-key" data-action="next">NEXT</div>
+  <div id="keypad-block">
+    <div id="keypad-instruction">Click on these buttons to input the memo</div>
+    <div id="keypad">
+      <div class="key-row">
+        <div class="key neg" data-val="a">a<span class="sub">(-1)</span></div>
+        <div class="key neg" data-val="b">b<span class="sub">(-2)</span></div>
+        <div class="key neg" data-val="c">c<span class="sub">(-3)</span></div>
+        <div class="key neg" data-val="d">d<span class="sub">(-4)</span></div>
+        <div class="key neg" data-val="e">e<span class="sub">(-5)</span></div>
+      </div>
+      <div class="key-row">
+        <div class="key" data-val="0">0</div>
+        <div class="key" data-val="1">1</div>
+        <div class="key" data-val="2">2</div>
+        <div class="key" data-val="3">3</div>
+        <div class="key" data-val="4">4</div>
+        <div class="key" data-val="5">5</div>
+        <div class="key" data-val="6">6</div>
+      </div>
+      <div class="key-row">
+        <div class="key action" data-action="clear">CLR</div>
+        <div class="key action" data-action="back">⌫</div>
+        <div class="key next-key" data-action="next">NEXT / START</div>
+      </div>
     </div>
   </div>
+
+</div><!-- /main-card -->
+
+<!-- Save Clock (bottom) -->
+<div id="saveclock-box">
+  <div id="saveclock">#SAVECLOCK</div>
+  <div id="saveclock-why">WCA is removing Clock as an official event — help stop them #saveclock</div>
 </div>
 
 <!-- Footer -->
@@ -543,7 +491,7 @@
 
 <script>
   const SCREEN_W = Math.min(window.innerWidth, 420);
-  const SIDE_W = Math.floor((SCREEN_W - 10 - 20) / 2);
+  const SIDE_W = Math.floor((SCREEN_W - 8 - 34) / 2);
   const PAD = Math.max(5, SIDE_W * 0.04);
   const GAP = Math.max(3, SIDE_W * 0.025);
   const SZ  = (SIDE_W - 2*PAD - 2*GAP) / 3;
@@ -726,12 +674,11 @@
   }
 
   function handleAction(action){
-    if(!started){ if(action==='next'){ startDrill(); } return; }
     if(action==='next'){ startDrill(); return; }
+    if(!started) return;
     if(submitted){ startDrill(); return; }
     if(action==='clear'){ currentInput=''; updateDisplay(); }
     else if(action==='back'){ currentInput=currentInput.slice(0,-1); updateDisplay(); }
-    else if(action==='submit'){ submitAnswer(); }
   }
 
   function submitAnswer(){
@@ -768,7 +715,6 @@
     startTimer();
   }
 
-  // Initial idle state: all hands at 12, boxes blank, timer 0.0
   function drawIdle(){
     drawSide(canvA, Array(9).fill(12), 'dark');
     drawSide(canvB, Array(9).fill(6), 'light');
@@ -799,7 +745,7 @@
   document.querySelectorAll('.key[data-action]').forEach(k=>{
     k.addEventListener('click',()=>handleAction(k.dataset.action));
   });
-  document.getElementById('start-btn').addEventListener('click', startDrill);
+
 </script>
 </body>
 </html>
